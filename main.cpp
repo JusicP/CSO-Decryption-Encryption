@@ -73,7 +73,7 @@ void EncryptCSO(int* v, int sz)
 
 void PrintUsage(int argc, char* argv[])
 {
-	printf("Use -file <\"file\"> and -enc or -dec parameter. Command line:\n");
+	printf("Use -file <\"filepath\"> and -enc or -dec parameter. Command line:\n");
 	for (int i = 0; i < argc; i++)
 	{
 		printf("%s\n", argv[i]);
