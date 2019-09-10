@@ -12,18 +12,17 @@ int key[4]
 	0x3985ADF,
 };
 
-void DecryptCSO(int* v, int sz)
+void DecryptCSO(uint32_t* v, int sz)
 {
-	int count = sz / 4;
-	int unk = 0;
-	for (int i = 0; i < count; i += 2)
+	uint32_t count = sz / 4;
+	uint32_t unk = 0;
+	for (uint32_t i = 0; i < count; i += 2)
 	{
-		int v0 = v[i];
-		int v1 = v[i + 1];
-		int sum = 84941944608;
-		int delta = 0x9e3779b9;
+		uint32_t v0 = v[i];
+		uint32_t v1 = v[i + 1];
+		uint32_t sum = 0x9e3779b9 * 32;
+		uint32_t delta = 0x9e3779b9;
 
-		// расшифровуем 8 байт
 		for (int i = 0; i < 32; i++)
 		{
 			v1 -= ((v0 << 4) - 0x1D149820) ^ (v0 + sum) ^ ((v0 >> 5) - 0x3985ADF);
@@ -32,27 +31,24 @@ void DecryptCSO(int* v, int sz)
 			v0 -= ((v1 << 4) - 0x4C7ADF03) ^ unk ^ ((v1 >> 5) + 0x5F30E75F);
 		}
 
-		// фиксируем изменения
 		v[i] = v0;
 		v[i + 1] = v1;
 
-		// фиксируем обратно магическое число (228)
-		sum = 84941944608;
-	} 	// и па некселю делаем по кругу
+		sum = 0x9e3779b9 * 32;
+	}
 }
 
-void EncryptCSO(int* v, int sz)
+void EncryptCSO(uint32_t* v, int sz)
 {
-	int count = sz / 4;
-	int unk228 = 0;
-	for (int i = 0; i < count; i += 2)
+	uint32_t count = sz / 4;
+	uint32_t unk228 = 0;
+	for (uint32_t i = 0; i < count; i += 2)
 	{
-		int v0 = v[i];
-		int v1 = v[i + 1];
-		int sum = 0;
-		int delta = 0x9e3779b9;
+		uint32_t v0 = v[i];
+		uint32_t v1 = v[i + 1];
+		uint32_t sum = 0;
+		uint32_t delta = 0x9e3779b9;
 
-		// зашифровуем 8 байт
 		for (int i = 0; i < 32; i++)
 		{
 			sum += delta;
@@ -61,19 +57,17 @@ void EncryptCSO(int* v, int sz)
 			v1 += ((v0 << 4) - key[2]) ^ (v0 + sum) ^ ((v0 >> 5) - key[3]);
 		}
 
-		// фиксируем изменения
 		v[i] = v0;
 		v[i + 1] = v1;
 
-		// фиксируем обратно магическое число
 		sum = 0;
-	} 	// и па некселю делаем по кругу
+	}
 }
 
 
 void PrintUsage(int argc, char* argv[])
 {
-	printf("Use -file <\"filepath\"> and -enc or -dec parameter. Command line:\n");
+	printf("Use -file <\"file\"> and -enc or -dec parameter. Command line:\n");
 	for (int i = 0; i < argc; i++)
 	{
 		printf("%s\n", argv[i]);
@@ -166,11 +160,11 @@ int main(int argc, char *argv[])
 
 	if (encrypt)
 	{
-		EncryptCSO((int*)readBuf, viSize);
+		EncryptCSO((uint32_t*)readBuf, viSize);
 	}
 	else
 	{
-		DecryptCSO((int*)readBuf, viSize);
+		DecryptCSO((uint32_t*)readBuf, viSize);
 	}
 
 	// get file name from path
