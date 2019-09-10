@@ -6,4 +6,4 @@ Usage:
 
 Run executable with follow arguments:
 -file "filepath"
--decrypt / -encrypt
+-dec / -enc
