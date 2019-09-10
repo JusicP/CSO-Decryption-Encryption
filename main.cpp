@@ -15,7 +15,6 @@ int key[4]
 void DecryptCSO(uint32_t* v, int sz)
 {
 	uint32_t count = sz / 4;
-	uint32_t unk = 0;
 	for (uint32_t i = 0; i < count; i += 2)
 	{
 		uint32_t v0 = v[i];
@@ -26,9 +25,8 @@ void DecryptCSO(uint32_t* v, int sz)
 		for (int i = 0; i < 32; i++)
 		{
 			v1 -= ((v0 << 4) - key[2]) ^ (v0 + sum) ^ ((v0 >> 5) - key[3]);
-			unk = sum + v1;
+			v0 -= ((v1 << 4) - key[0]) ^ (v1 + sum) ^ ((v1 >> 5) + key[1]);
 			sum -= delta;
-			v0 -= ((v1 << 4) - key[0]) ^ unk ^ ((v1 >> 5) + key[1]);
 		}
 
 		v[i] = v0;
@@ -41,7 +39,6 @@ void DecryptCSO(uint32_t* v, int sz)
 void EncryptCSO(uint32_t* v, int sz)
 {
 	uint32_t count = sz / 4;
-	uint32_t unk228 = 0;
 	for (uint32_t i = 0; i < count; i += 2)
 	{
 		uint32_t v0 = v[i];
@@ -52,8 +49,7 @@ void EncryptCSO(uint32_t* v, int sz)
 		for (int i = 0; i < 32; i++)
 		{
 			sum += delta;
-			unk228 = sum + v1;
-			v0 += ((v1 << 4) - key[0]) ^ unk228 ^ ((v1 >> 5) + key[1]);
+			v0 += ((v1 << 4) - key[0]) ^ (v1 + sum) ^ ((v1 >> 5) + key[1]);
 			v1 += ((v0 << 4) - key[2]) ^ (v0 + sum) ^ ((v0 >> 5) - key[3]);
 		}
 
