@@ -25,10 +25,10 @@ void DecryptCSO(uint32_t* v, int sz)
 
 		for (int i = 0; i < 32; i++)
 		{
-			v1 -= ((v0 << 4) - 0x1D149820) ^ (v0 + sum) ^ ((v0 >> 5) - 0x3985ADF);
+			v1 -= ((v0 << 4) - key[3]) ^ (v0 + sum) ^ ((v0 >> 5) - key[4]);
 			unk = sum + v1;
 			sum -= delta;
-			v0 -= ((v1 << 4) - 0x4C7ADF03) ^ unk ^ ((v1 >> 5) + 0x5F30E75F);
+			v0 -= ((v1 << 4) - key[0]) ^ unk ^ ((v1 >> 5) + key[1]);
 		}
 
 		v[i] = v0;
